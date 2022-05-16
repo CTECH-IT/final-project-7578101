@@ -6,7 +6,9 @@ let x = 20;
 let y = 40;
 let playerWidth = 20;
 let playerHeight = 20;
-let dy = 2;
+let dy = 0;
+let maxSpeed = 3;
+let g = 0.05;
 let touch = 0;
 let platformHeight = 10;
 const platform = [0, canvas.height-platformHeight, canvas.width, 400, 500, 100, 0, 400, 100];
@@ -33,7 +35,7 @@ function drawPlatform(){
 function platformCollision(){
     for (let i = 0; i <= numPlatform*3; i+=3){
         if ((platform[i]-playerWidth<=x && platform[i]+platform[i+2]>=x) && (y+playerHeight>=platform[i+1] && y+playerHeight<=platform[i+1]+platformHeight)){
-            touch=1;
+            dy=0;
         }
 
     }
@@ -44,10 +46,11 @@ function draw() {
     drawPlatform();
     drawPlayer();
     platformCollision();
-    if (touch==0){
-        y+=dy;
+    y+=dy;
+    if (dy <= maxSpeed){
+        dy+=g;
     }
-    touch=0;
+    
     
 }
 setInterval(draw, 10);
