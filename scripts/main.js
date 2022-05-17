@@ -6,26 +6,27 @@ let rightPressed = false;
 let leftPressed = false;
 let spacebar = false;
 let down = false;
-let canJump = 1;
+let canJump = 0;
+let canJump2 = 0;
 
 
 let x = 20;
 let y = 500;
 let playerWidth = 20;
 let playerHeight = 20;
-let dy = -6;
+let dy = 0;
 let dx = 0;
 let jump = 1;
 let jumpStart = 0.02;
 let jumpSlow = 0.001
-let maxSpeed = 4;
+let maxSpeed = 6;
 let maxSpeedX = 4;
 let speed = .1;
 let friction = .05;
 let g = 0.1;
 let touch = 0;
 let platformHeight = 10;
-const platform = [0, canvas.height-platformHeight, canvas.width, 400, 500, 100, 0, 400, 100];
+const platform = [0, canvas.height-platformHeight, canvas.width, 400, 457, 100, 0, 500, 100];
 let numPlatform = 3;
 
 
@@ -51,9 +52,10 @@ function playerMovement(){
     if (leftPressed == false && 0 > dx){
         dx += friction;
     }
-    if (spacebar == true && canJump > 0 && jump > 0){
+    if (spacebar == true && canJump > 0 && jump > 0 && canJump2 == 1){
         dy = -5;
-        canJump -= 1;
+        canJump2 = 0;
+        
         //dy -= jump;
         //jump -= jumpSlow;
     }
@@ -74,9 +76,12 @@ function drawPlatform(){
 
 function platformCollision(){
     for (let i = 0; i <= numPlatform*3; i+=3){
-        if ((platform[i]-playerWidth<=x && platform[i]+platform[i+2]>=x) && (y+playerHeight>=platform[i+1] && y+playerHeight<=platform[i+1]+platformHeight) && dy>=0){
+        if ((platform[i]-playerWidth<=x && platform[i]+platform[i+2]>=x) && (y+playerHeight>=platform[i+1] && y+playerHeight<=platform[i+1]+maxSpeed) && dy>=0){
             dy=0;
             y=platform[i+1]-playerHeight;
+            if (spacebar == false){
+              canJump2 = 1;
+            }
             canJump = 1;
         }
 
@@ -101,6 +106,7 @@ function draw() {
     drawPlatform();
     platformCollision();
     playerMovement();
+    canJump = 0;
     screenCollision();
     drawPlayer();
     y+=dy;
