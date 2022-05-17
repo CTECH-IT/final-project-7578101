@@ -10,6 +10,7 @@ let canJump = 0;
 let canJump2 = 0;
 
 
+let level = 1;
 let x = 20;
 let y = 500;
 let playerWidth = 20;
@@ -26,8 +27,9 @@ let friction = .05;
 let g = 0.1;
 let touch = 0;
 let platformHeight = 10;
-const platform = [0, canvas.height-platformHeight, canvas.width, 400, 457, 100, 0, 500, 100];
-let numPlatform = 3;
+const platformLevel = [[0, canvas.height-platformHeight, canvas.width, 400, 457, 100, 0, 500, 100], [0, canvas.height-platformHeight, canvas.width, 400, 300, 100, 100, 500, 100]];
+const wall = [[100, 100, 100, 100], [50, 400, 100, 100]];
+
 
 
 
@@ -65,20 +67,30 @@ function playerMovement(){
 }
 
 function drawPlatform(){
-    for (let i = 0; i < numPlatform*3; i+=3){
+    for (let i = 0; i < platformLevel[level].length; i+=3){
         ctx.beginPath();
-        ctx.rect(platform[i], platform[i+1], platform[i+2], 10);
+        ctx.rect(platformLevel[level][i], platformLevel[level][i+1], platformLevel[level][i+2], 10);
         ctx.fillStyle = "#3BAC2D";
         ctx.fill();
         ctx.closePath();
     }
 }
 
+function drawWall(){
+    for (let i = 0; i < wall[level].length; i+=4){
+        ctx.beginPath();
+        ctx.rect(wall[level][i], wall[level][i+1], wall[level][i+2], wall[level][i+3]);
+        ctx.fillStyle = "#BBBBBB";
+        ctx.fill();
+        ctx.closePath();
+    }
+}
+
 function platformCollision(){
-    for (let i = 0; i <= numPlatform*3; i+=3){
-        if ((platform[i]-playerWidth<=x && platform[i]+platform[i+2]>=x) && (y+playerHeight>=platform[i+1] && y+playerHeight<=platform[i+1]+maxSpeed) && dy>=0){
+    for (let i = 0; i <= platformLevel[level].length; i+=3){
+        if ((platformLevel[level][i]-playerWidth<=x && platformLevel[level][i]+platformLevel[level][i+2]>=x) && (y+playerHeight>=platformLevel[level][i+1] && y+playerHeight<=platformLevel[level][i+1]+maxSpeed) && dy>=0){
             dy=0;
-            y=platform[i+1]-playerHeight;
+            y=platformLevel[level][i+1]-playerHeight;
             if (spacebar == false){
               canJump2 = 1;
             }
@@ -104,6 +116,7 @@ function screenCollision(){
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawPlatform();
+    drawWall();
     platformCollision();
     playerMovement();
     canJump = 0;
@@ -114,6 +127,7 @@ function draw() {
     if (dy <= maxSpeed){
         dy+=g;
     }
+    
     
     
 }
