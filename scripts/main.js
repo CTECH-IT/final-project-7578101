@@ -11,7 +11,7 @@ let canJump2 = 0;
 
 
 let score = 0;
-let level = 0;
+let level = 1;
 let playerWidth = 20;
 let playerHeight = 20;
 let dy = 0;
