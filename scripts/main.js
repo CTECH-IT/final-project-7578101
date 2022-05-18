@@ -10,9 +10,8 @@ let canJump = 0;
 let canJump2 = 0;
 
 
-let level = 1;
-let x = 20;
-let y = 500;
+let score = 0;
+let level = 0;
 let playerWidth = 20;
 let playerHeight = 20;
 let dy = 0;
@@ -28,8 +27,13 @@ let friction = .05;
 let g = 0.1;
 let touch = 0;
 let platformHeight = 10;
-const platformLevel = [[0, canvas.height-platformHeight, canvas.width, 400, 457, 100, 0, 500, 100], [0, canvas.height-platformHeight, canvas.width, 400, 300, 100, 100, 500, 100]];
-const wall = [[100, 100, 100, 100], [250, 400, 50, 100, 500, 300, 50, 300]];
+const platformLevel = [[400, 457, 100, 0, 500, 100], [], [500, 490, 100, 500, 380, 100], [500, 500, 150, 50, 400, 150, 500, 300, 150, 50, 200, 150,], []];
+const wall = [[0, canvas.height-platformHeight, canvas.width, 10, 350, 100, 100, 100], [], [0, 300, 500, 200, 600, 300, 100, 200], [550, 200, 50, 10, 540, 150, 10, 60, 600, 150, 10, 60], []];
+const next = [650, 550, 550, 550, 50, 250, 570, 170];
+const coordinate = [350, 550, 100, 400, 50, 550, 20, 550, 100, 100];
+let x = coordinate[2*level];
+let y = coordinate[2*level+1];
+let nextSize = 10;
 
 
 
@@ -65,6 +69,7 @@ function playerMovement(){
     if ((-1*friction <= dx && dx <= friction) && rightPressed == false && leftPressed == false){
         dx = 0;
     }
+    canJump = 0;
 }
 
 function drawPlatform(){
@@ -81,10 +86,30 @@ function drawWall(){
     for (let i = 0; i < wall[level].length; i+=4){
         ctx.beginPath();
         ctx.rect(wall[level][i], wall[level][i+1], wall[level][i+2], wall[level][i+3]);
-        ctx.fillStyle = "#BBBBBB";
+        ctx.fillStyle = "#595959";
         ctx.fill();
         ctx.closePath();
     }
+}
+
+function drawScore(){//updates score
+    ctx.font = "16px Arial"
+    ctx.fillStyle = "#FFFFFF"
+    ctx.fillText("Score: " + score, 8, 20)
+}
+
+function drawLevel(){//updates score
+    ctx.font = "16px Arial"
+    ctx.fillStyle = "#FFFFFF"
+    ctx.fillText("Level: " + level, canvas.width/2-30, 20)
+}
+
+function drawNext(){
+    ctx.beginPath();
+    ctx.rect(next[level*2], next[level*2+1], nextSize, nextSize);
+    ctx.fillStyle = "#20D9C3";
+    ctx.fill();
+    ctx.closePath();
 }
 
 function platformCollision(){
@@ -109,6 +134,14 @@ function screenCollision(){
     if (x+playerWidth>=canvas.width && dx>0){
         x=canvas.width-playerWidth;
         dx=dx/-2;
+    }
+    if (y+playerHeight>=canvas.height && dy>=0){
+        y=canvas.height-playerHeight;
+        dy=0;
+        if (spacebar == false){
+            canJump2 = 1;
+          }
+          canJump = 1;
     }
 }
 
@@ -140,24 +173,36 @@ function wallCollision(){
 }
 
 
+function nextCollision(){
+    if ((x+playerWidth>=next[2*level] && x<=next[2*level]+nextSize) && (y<=next[2*level+1]+nextSize && y+playerHeight>=next[2*level+1])){
+        level+=1;
+        x = coordinate[2*level];
+        y = coordinate[2*level+1];
+        dx=0;
+        dy=0;
+    }
+}
+
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawPlatform();
-    drawWall();
+    playerMovement();
     platformCollision();
     wallCollision();
-    playerMovement();
-    canJump = 0;
     screenCollision();
+    nextCollision();
+
+    drawPlatform();
+    drawWall();
+    drawNext();
     drawPlayer();
+    drawScore();
+    drawLevel();
     y+=dy;
     x+=dx;
     if (dy <= maxSpeed){
         dy+=g;
     }
-    
-    
-    
 }
 
 
