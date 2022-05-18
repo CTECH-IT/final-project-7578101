@@ -29,22 +29,29 @@ let friction = .05;
 let g = 0.1;
 let touch = 0;
 let platformHeight = 10;
-const platformLevel = [[400, 457, 100, 300, 500, 100], [], [500, 490, 100, 500, 380, 100], [500, 500, 150, 50, 400, 150, 500, 300, 150, 50, 200, 150,], []];
-const wall = [[0, canvas.height-platformHeight, canvas.width, 10, 350, 100, 100, 100, 400, 400, 50, 110], [], [0, 300, 500, 200, 600, 300, 100, 200], [550, 200, 50, 10, 540, 150, 10, 60, 600, 150, 10, 60], []];
-const next = [650, 550, 550, 550, 50, 250, 570, 170];
-const coordinate = [350, 550, 100, 400, 50, 550, 20, 550, 100, 100];
+const platformLevel = [[400, 457, 100, 300, 500, 100], [], [500, 490, 100, 500, 380, 100], [], [500, 500, 150, 50, 400, 150, 500, 300, 150, 50, 200, 150,], []];
+const wall = [[0, canvas.height-platformHeight, canvas.width, 10, 350, 100, 100, 100, 400, 400, 50, 110], [], [0, 300, 500, 200, 600, 300, 100, 200], [0, 450, 150, 150, 550, 450, 150, 150], [550, 200, 50, 10, 540, 150, 10, 60, 600, 150, 10, 60], []];
+const next = [650, 550, 550, 550, 50, 250, 50, 400, 570, 170];
+const coordinate = [350, 550, 100, 400, 50, 550, 600, 400, 20, 550, 100, 100];
 let x = coordinate[2*level];
 let y = coordinate[2*level+1];
+const kill = [[100, 500, 40, 40], [], [], [150, 470, 400, 130], [], []];
 let nextSize = 10;
 let touchPlatform = 0;
 
 
 
+function reset(){
+    x = coordinate[2*level];
+    y = coordinate[2*level+1];
+    dx=0;
+    dy=0;
+}
 
 function drawPlayer(){
     ctx.beginPath();
     ctx.rect(x, y, playerWidth, playerHeight);
-    ctx.fillStyle = "#FF0000";
+    ctx.fillStyle = "#2A2CAB";
     ctx.fill();
     ctx.closePath();
 }
@@ -115,22 +122,50 @@ function drawNext(){
     ctx.closePath();
 }
 
+function drawTest(){//updates score
+    ctx.font = "16px Arial"
+    ctx.fillStyle = "#FFFFFF"
+    ctx.fillText(fall+" "+touchPlatform, canvas.width/2-30, 50)
+}
+
+function drawKill(){
+    for (let i = 0; i < kill[level].length; i+=4){
+        ctx.beginPath();
+        ctx.rect(kill[level][i], kill[level][i+1], kill[level][i+2], kill[level][i+3]);
+        ctx.fillStyle = "#8C110A";
+        ctx.fill();
+        ctx.closePath();
+    }
+}
+
+function killCollision(){
+    for (let i = 0; i < kill[level].length; i+=4){
+        if ((x+playerWidth>=kill[level][i] && x<=kill[level][i]+kill[level][i+2]) && (y<=kill[level][i+1]+kill[level][i+3] && y+playerHeight>=kill[level][i+1])){
+            reset();
+        }
+    }
+}
+
 function platformCollision(){
+    touchPlatform = 0;
     for (let i = 0; i <= platformLevel[level].length; i+=3){
         if ((platformLevel[level][i]-playerWidth<=x && platformLevel[level][i]+platformLevel[level][i+2]>=x) && (y+playerHeight>=platformLevel[level][i+1] && y+playerHeight<=platformLevel[level][i+1]+maxSpeed) && dy>=0){
-            dy=0;
-            y=platformLevel[level][i+1]-playerHeight;
-            if (spacebar == false){
-              canJump2 = 1;
+            if (fall == 0 && downPressed == false){
+                dy=0;
+                y=platformLevel[level][i+1]-playerHeight;
+                if (spacebar == false){
+                canJump2 = 1;
+                }
+                canJump = 1;
             }
-            canJump = 1;
             touchPlatform = 1;
         }
-      if (downPressed == true && touchPlatform == 1){
+    }
+    if (downPressed == true){
         fall = 1;
       }
-      if (touchPlatform == 0)
-
+    if (touchPlatform == 0 && downPressed == false){
+        fall=0;
     }
 }
 
@@ -184,10 +219,7 @@ function wallCollision(){
 function nextCollision(){
     if ((x+playerWidth>=next[2*level] && x<=next[2*level]+nextSize) && (y<=next[2*level+1]+nextSize && y+playerHeight>=next[2*level+1])){
         level+=1;
-        x = coordinate[2*level];
-        y = coordinate[2*level+1];
-        dx=0;
-        dy=0;
+        reset();
     }
 }
 
@@ -198,14 +230,17 @@ function draw() {
     platformCollision();
     wallCollision();
     screenCollision();
+    killCollision();
     nextCollision();
 
     drawPlatform();
     drawWall();
+    drawKill();
     drawNext();
     drawPlayer();
     drawScore();
     drawLevel();
+    //drawTest();
     y+=dy;
     x+=dx;
     if (dy <= maxSpeed){
