@@ -15,7 +15,7 @@ let n = 0;
 
 
 let score = 0;
-let level = 5;
+let level = 1;
 let playerWidth = 20;
 let playerHeight = 20;
 let dy = 0;
@@ -42,8 +42,9 @@ var coin = [[300, 450], [350, 530], [650, 250], [350, 300, 310, 310, 390, 310], 
 let nextSize = 10;
 let touchPlatform = 0;
 let coinRadius = 9;
-let coin2=[];
-Object.assign(coin2, coin);
+var coin2 = [[300, 450], [350, 530], [650, 250], [350, 300, 310, 310, 390, 310], [650, 100], [10, 368], []];
+//var coin2=[];
+//Object.assign(coin2, coin);
 let score2 = 0;
 let dm = 6;
 
@@ -54,7 +55,8 @@ function reset(){
   y = coordinate[2*level+1];
   dx=0;
   dy=0;
-  m=0
+  m=0;
+  n=0;
   coin[level]=[];
   Object.assign(coin[level], coin2[level]);
   score=score2;
@@ -110,7 +112,7 @@ function playerMovement(){
 function objectMovement(){
     m+=dm;
     n+=dm;
-    if (m>=1700){
+    if (m>=1650){
         m=0;
     }
     if (n>=2100){
@@ -166,7 +168,7 @@ function drawNext(){
 function drawTest(){//updates score
     ctx.font = "16px Arial"
     ctx.fillStyle = "#FFFFFF"
-    ctx.fillText(m, canvas.width/2-30, 50)
+    ctx.fillText(coin2[level], canvas.width/2-30, 50)
 }
 
 function drawKill(){
