@@ -13,7 +13,7 @@ let fall = 0;
 
 
 let score = 0;
-let level = 3;
+let level = 1;
 let playerWidth = 20;
 let playerHeight = 20;
 let dy = 0;
@@ -36,11 +36,12 @@ const coordinate = [350, 550, 100, 400, 50, 550, 600, 400, 20, 550, 100, 100];
 let x = coordinate[2*level];
 let y = coordinate[2*level+1];
 let kill = [[100, 500, 40, 40], [], [], [150, 470, 400, 130], [], []];
-let coin = [[300, 450], [350, 530], [650, 250], [350, 300, 310, 310, 390, 310], [650, 100], []];
+var coin = [[300, 450], [350, 530], [650, 250], [350, 300, 310, 310, 390, 310], [650, 100], []];
 let nextSize = 10;
 let touchPlatform = 0;
 let coinRadius = 9;
-let coin2 = coin;
+let coin2=[];
+Object.assign(coin2, coin);
 let score2 = 0;
 
 
@@ -50,7 +51,8 @@ function reset(){
   y = coordinate[2*level+1];
   dx=0;
   dy=0;
-  coin[level]=coin2[level];
+  coin[level]=[];
+  Object.assign(coin[level], coin2[level]);
   score=score2;
 }
 
@@ -144,7 +146,7 @@ function drawNext(){
 function drawTest(){//updates score
     ctx.font = "16px Arial"
     ctx.fillStyle = "#FFFFFF"
-    ctx.fillText(fall+" "+touchPlatform, canvas.width/2-30, 50)
+    ctx.fillText(coin2.length, canvas.width/2-30, 50)
 }
 
 function drawKill(){
@@ -248,6 +250,7 @@ function coinCollision(){
     if ((x+playerWidth>=coin[level][i]-coinRadius && x<=coin[level][i]+coinRadius) && (y+playerHeight>=coin[level][i+1]-coinRadius && y<=coin[level][i+1]+coinRadius)){
       coin[level][i]=-100;
       score+=1;
+      console.log(coin2[level]);
     }
   }
 }
