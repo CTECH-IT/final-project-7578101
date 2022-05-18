@@ -28,7 +28,7 @@ let g = 0.1;
 let touch = 0;
 let platformHeight = 10;
 const platformLevel = [[400, 457, 100, 0, 500, 100], [], [500, 490, 100, 500, 380, 100], [500, 500, 150, 50, 400, 150, 500, 300, 150, 50, 200, 150,], []];
-const wall = [[0, canvas.height-platformHeight, canvas.width, 10, 350, 100, 100, 100], [], [0, 300, 500, 200, 600, 300, 100, 200], [550, 200, 50, 10, 540, 150, 10, 60, 600, 150, 10, 60], []];
+const wall = [[0, canvas.height-platformHeight, canvas.width, 10, 350, 100, 100, 100, 0, 400, 50, 200], [], [0, 300, 500, 200, 600, 300, 100, 200], [550, 200, 50, 10, 540, 150, 10, 60, 600, 150, 10, 60], []];
 const next = [650, 550, 550, 550, 50, 250, 570, 170];
 const coordinate = [350, 550, 100, 400, 50, 550, 20, 550, 100, 100];
 let x = coordinate[2*level];
@@ -129,11 +129,11 @@ function platformCollision(){
 function screenCollision(){
     if (x<=0 && dx<0){
         x=0;
-        dx=dx/-2;
+        dx=dx/-3;
     }
     if (x+playerWidth>=canvas.width && dx>0){
         x=canvas.width-playerWidth;
-        dx=dx/-2;
+        dx=dx/-3;
     }
     if (y+playerHeight>=canvas.height && dy>=0){
         y=canvas.height-playerHeight;
@@ -162,11 +162,11 @@ function wallCollision(){
             
         }
         if ((wall[level][i]-playerWidth<=x && wall[level][i]+maxSpeedX>=x+playerWidth) && (y+playerHeight>wall[level][i+1]+maxSpeed && y<wall[level][i+1]+wall[level][i+3]-jumpVelocity) && dx>=0){
-            dx=dx/-2;
+            dx=dx/-3;
             x=wall[level][i]-playerWidth;
         }
         if ((wall[level][i]+wall[level][i+2]>=x && wall[level][i]+wall[level][i+2]-maxSpeedX<=x) && (y+playerHeight>wall[level][i+1]+maxSpeed && y<wall[level][i+1]+wall[level][i+3]-jumpVelocity) && dx<=0){
-            dx=dx/-2;
+            dx=dx/-3;
             x=wall[level][i]+wall[level][i+2];
         }
     }
