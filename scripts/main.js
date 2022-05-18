@@ -6,8 +6,10 @@ let rightPressed = false;
 let leftPressed = false;
 let spacebar = false;
 let down = false;
+let downPressed = false;
 let canJump = 0;
 let canJump2 = 0;
+let fall = 0;
 
 
 let score = 0;
@@ -34,6 +36,7 @@ const coordinate = [350, 550, 100, 400, 50, 550, 20, 550, 100, 100];
 let x = coordinate[2*level];
 let y = coordinate[2*level+1];
 let nextSize = 10;
+let touchPlatform = 0;
 
 
 
@@ -121,7 +124,12 @@ function platformCollision(){
               canJump2 = 1;
             }
             canJump = 1;
+            touchPlatform = 1;
         }
+      if (downPressed == true && touchPlatform == 1){
+        fall = 1;
+      }
+      if (touchPlatform == 0)
 
     }
 }
@@ -221,6 +229,9 @@ function keyDownHandler(e) {//detects when keys are pushed down
     if(e.key=="t") {
         down = true;
     }
+    if(e.key=="Down" || e.key == "ArrowDown") {
+        downPressed = true;
+    }
 
 }
 
@@ -236,6 +247,9 @@ function keyUpHandler(e) {//detects when keys stop being pushed
     }
     if(e.key=="t") {
         down = false;
+    }
+    if(e.key=="Down" || e.key == "ArrowDown") {
+        downPressed = false;
     }
 }
 
