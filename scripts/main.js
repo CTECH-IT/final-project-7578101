@@ -10,6 +10,8 @@ let downPressed = false;
 let canJump = 0;
 let canJump2 = 0;
 let fall = 0;
+let m = 0;
+let n = 0;
 
 
 let score = 0;
@@ -29,20 +31,21 @@ let friction = .05;
 let g = 0.1;
 let touch = 0;
 let platformHeight = 10;
-const platformLevel = [[400, 457, 100, 300, 500, 100], [], [500, 490, 100, 500, 380, 100], [], [500, 500, 150, 50, 400, 150, 500, 300, 150, 50, 200, 150,], [50, 120, 50]];
-const wall = [[0, canvas.height-platformHeight, canvas.width, 10, 350, 100, 100, 100, 400, 400, 50, 110], [], [0, 300, 500, 200, 600, 300, 100, 200], [0, 450, 150, 150, 550, 450, 150, 150], [550, 200, 50, 10, 540, 150, 10, 60, 600, 150, 10, 60], [100, 80, 600, 50, 0, 80, 50, 520]];
-const next = [650, 550, 550, 550, 50, 250, 50, 400, 570, 170];
-const coordinate = [350, 550, 100, 400, 50, 550, 600, 400, 20, 550, 650, 50];
+const platformLevel = [[400, 457, 100, 300, 500, 100], [], [500, 490, 100, 500, 380, 100], [], [500, 500, 150, 50, 400, 150, 500, 300, 150, 50, 200, 150,], [50, 120, 50, 50, 380, 50, 50, 270, 50, 600, 195, 50, 600, 345, 50, 50, 520, 50], []];
+const wall = [[0, canvas.height-platformHeight, canvas.width, 10, 350, 100, 100, 100, 400, 400, 50, 110], [], [0, 300, 500, 200, 600, 300, 100, 200], [0, 450, 150, 150, 550, 450, 150, 150], [550, 200, 50, 10, 540, 150, 10, 60, 600, 150, 10, 60], [100, 80, 600, 50, 0, 80, 50, 275, 650, 80, 50, 520, 50, 155, 550, 50, 100, 230, 550, 50, 50, 305, 550, 50, 100, 380, 550, 150, 50, 555, 550, 45, 0, 380, 50, 275], []];
+const next = [650, 550, 550, 550, 50, 250, 50, 400, 570, 170, 620, 580];
+const coordinate = [350, 550, 100, 400, 50, 550, 600, 400, 20, 550, 650, 50, 0, 0];
 let x = coordinate[2*level];
 let y = coordinate[2*level+1];
-let kill = [[100, 500, 40, 40], [], [], [150, 470, 400, 130], [], []];
-var coin = [[300, 450], [350, 530], [650, 250], [350, 300, 310, 310, 390, 310], [650, 100], []];
+let kill = [[100, 500, 40, 40], [], [], [150, 470, 400, 130], [], [m-10, 213, 10, 10, m-10, 363, 10, 10, 700-m, 288, 10, 10, 700-m, 138, 10, 10, 700-m, 538, 10, 10], []];
+var coin = [[300, 450], [350, 530], [650, 250], [350, 300, 310, 310, 390, 310], [650, 100], [10, 368], []];
 let nextSize = 10;
 let touchPlatform = 0;
 let coinRadius = 9;
 let coin2=[];
 Object.assign(coin2, coin);
 let score2 = 0;
+let dm = 6;
 
 
 
@@ -51,6 +54,7 @@ function reset(){
   y = coordinate[2*level+1];
   dx=0;
   dy=0;
+  m=0
   coin[level]=[];
   Object.assign(coin[level], coin2[level]);
   score=score2;
@@ -103,6 +107,22 @@ function playerMovement(){
     canJump = 0;
 }
 
+function objectMovement(){
+    m+=dm;
+    n+=dm;
+    if (m>=1700){
+        m=0;
+    }
+    if (n>=2100){
+        n=0;
+    }
+    kill[5][0] = m-10;
+    kill[5][4] = n-10;
+    kill[5][8] = 700-m;
+    kill[5][12] = 700-m;
+    kill[5][16] = 700-m;
+}
+
 function drawPlatform(){
     for (let i = 0; i < platformLevel[level].length; i+=3){
         ctx.beginPath();
@@ -146,7 +166,7 @@ function drawNext(){
 function drawTest(){//updates score
     ctx.font = "16px Arial"
     ctx.fillStyle = "#FFFFFF"
-    ctx.fillText(coin2.length, canvas.width/2-30, 50)
+    ctx.fillText(m, canvas.width/2-30, 50)
 }
 
 function drawKill(){
@@ -265,6 +285,7 @@ function draw() {
     coinCollision();
     killCollision();
     nextCollision();
+    objectMovement()
 
     drawPlatform();
     drawWall();
@@ -280,6 +301,7 @@ function draw() {
     if (dy <= maxSpeed){
         dy+=g;
     }
+    
 }
 
 
