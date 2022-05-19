@@ -165,6 +165,14 @@ function win(){
         ctx.fillStyle = "#FFFFFF"
         ctx.fillText("YOU WIN!", 230, 330)
     }
+  if (level==1){
+        ctx.font = "20px Arial"
+        ctx.fillStyle = "#FFFFFF"
+        ctx.fillText("space = jump", 230, 200);
+        ctx.fillText("right/left arrow = move", 230, 225);
+        ctx.fillText("down arrow = fall through platform", 230, 250);
+        ctx.fillText("coin =", 280, 536);
+    }
 }
 
 function drawDeath(){//updates score
@@ -311,11 +319,11 @@ function draw() {
     drawCoin();
     drawKill();
     drawNext();
+    win();
     drawPlayer();
     drawScore();
     drawLevel();
     drawDeath();
-    win();
     //drawTest();
     y+=dy;
     x+=dx;
