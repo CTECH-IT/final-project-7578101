@@ -12,7 +12,7 @@ let canJump2 = 0;
 let fall = 0;
 let m = 0;
 let n = 0;
-
+let deaths = 0;
 
 let score = 0;
 let level = 1;
@@ -31,20 +31,21 @@ let friction = .05;
 let g = 0.1;
 let touch = 0;
 let platformHeight = 10;
-const platformLevel = [[400, 457, 100, 300, 500, 100], [], [500, 490, 100, 500, 380, 100], [], [500, 500, 150, 50, 400, 150, 500, 300, 150, 50, 200, 150,], [50, 120, 50, 50, 380, 50, 50, 270, 50, 600, 195, 50, 600, 345, 50, 50, 520, 50], []];
-const wall = [[0, canvas.height-platformHeight, canvas.width, 10, 350, 100, 100, 100, 400, 400, 50, 110], [], [0, 300, 500, 200, 600, 300, 100, 200], [0, 450, 150, 150, 550, 450, 150, 150], [550, 200, 50, 10, 540, 150, 10, 60, 600, 150, 10, 60], [100, 80, 600, 50, 0, 80, 50, 275, 650, 80, 50, 520, 50, 155, 550, 50, 100, 230, 550, 50, 50, 305, 550, 50, 100, 380, 550, 150, 50, 555, 550, 45, 0, 380, 50, 275], []];
-const next = [650, 550, 550, 550, 50, 250, 50, 400, 570, 170, 620, 580];
-const coordinate = [350, 550, 100, 400, 50, 550, 600, 400, 20, 550, 650, 50, 0, 0];
+const platformLevel = [[400, 457, 100, 300, 500, 100], [], [500, 490, 100, 500, 380, 100], [], [500, 500, 150, 50, 400, 150, 500, 300, 150, 50, 200, 150,], [50, 120, 50, 50, 380, 50, 50, 270, 50, 600, 195, 50, 600, 345, 50, 50, 520, 50], [], []];
+const wall = [[0, 590, 700, 10, 350, 100, 100, 100, 400, 400, 50, 110], [], [0, 300, 500, 200, 600, 300, 100, 200], [0, 450, 150, 150, 550, 450, 150, 150], [550, 200, 50, 10, 540, 150, 10, 60, 600, 150, 10, 60], [100, 80, 600, 50, 0, 80, 50, 275, 650, 80, 50, 520, 50, 155, 550, 50, 100, 230, 550, 50, 50, 305, 550, 50, 100, 380, 550, 150, 50, 555, 550, 45, 0, 380, 50, 275], [250, 500, 25, 20, 440, 400, 20, 20, 250, 300, 15, 20, 450, 200, 10, 20], []];
+const next = [650, 550, 550, 550, 50, 250, 50, 400, 570, 170, 620, 580, 350, 120];
+const coordinate = [350, 550, 100, 400, 50, 550, 600, 400, 20, 550, 650, 50, 350, 550];
 let x = coordinate[2*level];
 let y = coordinate[2*level+1];
-let kill = [[100, 500, 40, 40], [], [], [150, 470, 400, 130], [], [m-10, 213, 10, 10, m-10, 363, 10, 10, 700-m, 288, 10, 10, 700-m, 138, 10, 10, 700-m, 538, 10, 10], []];
-var coin = [[300, 450], [350, 530], [650, 250], [350, 300, 310, 310, 390, 310], [650, 100], [10, 368], []];
+let kill = [[100, 500, 40, 40], [], [], [150, 470, 400, 130], [], [m-10, 213, 10, 10, m-10, 363, 10, 10, 700-m, 288, 10, 10, 700-m, 138, 10, 10, 700-m, 538, 10, 10], [240, 180, 10, 340, 460, 180, 10, 340], []];
+var coin = [[300, 450], [350, 530], [650, 250], [350, 300, 310, 310, 390, 310], [650, 100], [10, 368], [490, 200], []];
 let nextSize = 10;
 let touchPlatform = 0;
 let coinRadius = 9;
-var coin2 = [[300, 450], [350, 530], [650, 250], [350, 300, 310, 310, 390, 310], [650, 100], [10, 368], []];
-//var coin2=[];
-//Object.assign(coin2, coin);
+var coin2 = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []]
+for (let i = 0; i < coin.length; i+=1){
+    Object.assign(coin2[i], coin[i]);
+}
 let score2 = 0;
 let dm = 6;
 
@@ -152,9 +153,24 @@ function drawScore(){//updates score
 }
 
 function drawLevel(){//updates score
+    if (level != 7){
+        ctx.font = "16px Arial"
+        ctx.fillStyle = "#FFFFFF"
+        ctx.fillText("Level: " + level, canvas.width-70, 20)
+    }
+}
+function win(){
+    if (level==7){
+        ctx.font = "50px Arial"
+        ctx.fillStyle = "#FFFFFF"
+        ctx.fillText("YOU WIN!", 230, 330)
+    }
+}
+
+function drawDeath(){//updates score
     ctx.font = "16px Arial"
     ctx.fillStyle = "#FFFFFF"
-    ctx.fillText("Level: " + level, canvas.width/2-30, 20)
+    ctx.fillText("Deaths: " + deaths, canvas.width/2-38, 20)
 }
 
 function drawNext(){
@@ -168,7 +184,7 @@ function drawNext(){
 function drawTest(){//updates score
     ctx.font = "16px Arial"
     ctx.fillStyle = "#FFFFFF"
-    ctx.fillText(coin2[level], canvas.width/2-30, 50)
+    ctx.fillText(coin2, canvas.width/2-30, 50)
 }
 
 function drawKill(){
@@ -185,6 +201,7 @@ function killCollision(){
     for (let i = 0; i < kill[level].length; i+=4){
         if ((x+playerWidth>=kill[level][i] && x<=kill[level][i]+kill[level][i+2]) && (y<=kill[level][i+1]+kill[level][i+3] && y+playerHeight>=kill[level][i+1])){
             reset();
+            deaths += 1;
         }
     }
 }
@@ -297,6 +314,8 @@ function draw() {
     drawPlayer();
     drawScore();
     drawLevel();
+    drawDeath();
+    win();
     //drawTest();
     y+=dy;
     x+=dx;
