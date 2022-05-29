@@ -149,7 +149,7 @@ function drawWall(){
 function drawScore(){//updates score
     ctx.font = "16px Arial"
     ctx.fillStyle = "#FFFFFF"
-    ctx.fillText("Coins: " + score, 8, 20)
+    ctx.fillText("Coins: " + score + "/8", 8, 20)
 }
 
 function drawLevel(){//updates score
